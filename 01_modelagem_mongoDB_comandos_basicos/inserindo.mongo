@@ -1,0 +1,59 @@
+db.infoAutores.insertOne({
+    nome: "Yan Oreste",
+    email: "yan@alura.com",
+    senha: "yan1234",
+    descricao: "Instrutor e desenvolvedor na Alura"
+})
+
+var autorInfo = db.infoAutores.findOne({
+    email: "yan@alura.com"
+})
+
+db.artigos.insertOne({
+    autor: {
+        nome: autorInfo.nome,
+        descricao: autorInfo.descricao,
+        id_info: autorInfo._id
+    },
+    slug: "dicas-politicas-de-senha",
+    titulo: "Algumas dicas importantes sobre políticas de senha",
+    conteudo: "O fato é que, por algum motivo, meus usuários estavam usando senhas fracas para suas próprias contas.",
+    dataCriado: ISODate('2018-07-18'),
+    categorias : [
+        'Arquitetura',
+        'Programação'
+    ],
+    comentarios :[]
+
+})
+
+
+
+var documento = db.artigos.findOneAndUpdate({
+    slug: "dicas-politicas-de-senha"
+},{
+    $push :{
+        comentarios :{
+            $each:[
+                {
+                    nome: "Adenilson",
+                    email: "adenilson@alura.com",
+                    texto: "Achei muito legal esse artigo",
+                    data: ISODate('2019-09-24')
+                }
+            ],
+            $position : 0
+        }
+    }
+},{
+    returnNewDocument : true
+})
+
+db.comentarios.insertOne({
+    id_artigo : documento._id,
+    nome: "Adenilson",
+    email: "adenilson@alura.com",
+    texto: "Achei muito legal esse artigo",
+    data: ISODate('2019-09-24')
+
+})
